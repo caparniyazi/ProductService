@@ -1,6 +1,7 @@
-package com.appsdeveloperblog.estore.productservice.rest;
+package com.appsdeveloperblog.estore.productservice.command.rest;
 
 import com.appsdeveloperblog.estore.productservice.command.CreateProductCommand;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.core.env.Environment;
@@ -25,32 +26,28 @@ public class ProductCommandController {
      * @return The product
      */
     @PostMapping
-    public String createProduct(@RequestBody CreateProductRestModel createProductRestModel) {
+    public String createProduct(@Valid @RequestBody CreateProductRestModel createProductRestModel) {
         CreateProductCommand createProductCommand = CreateProductCommand.builder().price(createProductRestModel.getPrice())
                 .title(createProductRestModel.getTitle())
                 .quantity(createProductRestModel.getQuantity())
                 .productId(UUID.randomUUID().toString()).build();
 
-        try {
-            return commandGateway.sendAndWait(createProductCommand);
-        } catch (Exception e) {
-            return e.getLocalizedMessage();
-        }
+        return commandGateway.sendAndWait(createProductCommand);
     }
 
-    @PutMapping
-    public String updateProdcut() {
-        return "Product updated";
-    }
+//    @PutMapping
+//    public String updateProdcut() {
+//        return "Product updated";
+//    }
+//
+//    @DeleteMapping
+//    public String deleteProduct() {
+//        return "Product deleted";
+//    }
 
-    @DeleteMapping
-    public String deleteProduct() {
-        return "Product deleted";
-    }
-
-    @GetMapping
-    public String getProducts() {
-        // local.server.port will resolve to the real port number the app is running on..
-        return "Product list " + env.getProperty("local.server.port");
-    }
+//    @GetMapping
+//    public String getProducts() {
+//        // local.server.port will resolve to the real port number the app is running on.
+//        return "Product list " + env.getProperty("local.server.port");
+//    }
 }
