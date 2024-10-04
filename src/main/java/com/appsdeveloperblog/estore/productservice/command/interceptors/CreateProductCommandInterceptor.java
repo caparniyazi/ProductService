@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -27,13 +26,14 @@ public class CreateProductCommandInterceptor implements MessageDispatchIntercept
     public BiFunction<Integer, CommandMessage<?>, CommandMessage<?>>
     handle(@Nonnull List<? extends CommandMessage<?>> messages) {
         return (index, command) -> {
-            CreateProductCommand createProductCommand = (CreateProductCommand) command.getPayload();
             LOGGER.info("Intercepted command: " + command.getPayloadType());
 
             if (command.getPayloadType().equals(CreateProductCommand.class)) {
+                CreateProductCommand createProductCommand = (CreateProductCommand) command.getPayload();
 
                 ProductLookupEntity productLookupEntity =
                         productLookupRepository.findByProductIdOrTitle(createProductCommand.getProductId(), createProductCommand.getTitle());
+
                 if (productLookupEntity != null) {
                     throw new IllegalStateException(
                             String.format("Product with productId %s or title %s already exists",

@@ -1,5 +1,6 @@
 package com.appsdeveloperblog.estore.productservice;
 
+import com.appsdeveloperblog.estore.core.config.AxonConfig;
 import com.appsdeveloperblog.estore.productservice.command.interceptors.CreateProductCommandInterceptor;
 import com.appsdeveloperblog.estore.productservice.core.errorhandling.ProductServiceEventsErrorHandler;
 import org.axonframework.commandhandling.CommandBus;
@@ -9,12 +10,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @EnableDiscoveryClient
 @SpringBootApplication
 @RestController
+@Import({ AxonConfig.class })
 public class ProductServiceApplication {
 
     public static void main(String[] args) {
