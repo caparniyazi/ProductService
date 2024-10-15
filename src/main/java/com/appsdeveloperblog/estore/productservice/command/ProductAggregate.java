@@ -1,6 +1,8 @@
 package com.appsdeveloperblog.estore.productservice.command;
 
+import com.appsdeveloperblog.estore.core.commands.CancelProductReservationCommand;
 import com.appsdeveloperblog.estore.core.commands.ReserveProductCommand;
+import com.appsdeveloperblog.estore.core.events.ProductReservationCancelledEvent;
 import com.appsdeveloperblog.estore.core.events.ProductReservedEvent;
 import com.appsdeveloperblog.estore.productservice.core.events.ProductCreatedEvent;
 import org.axonframework.commandhandling.CommandHandler;
@@ -47,6 +49,25 @@ public class ProductAggregate {
 
         // Apply the event to the aggregate and handle it with event sourcing handler..
         AggregateLifecycle.apply(productReservedEvent);
+    }
+
+    @CommandHandler
+    public void handle(CancelProductReservationCommand cancelProductReservationCommand) {
+        ProductReservationCancelledEvent productReservationCancelledEvent =
+                ProductReservationCancelledEvent.builder()
+                        .productId(cancelProductReservationCommand.getProductId())
+                        .orderId(cancelProductReservationCommand.getOrderId())
+                        .quantity(cancelProductReservationCommand.getQuantity())
+                        .reason(cancelProductReservationCommand.getReason())
+                        .userId(cancelProductReservationCommand.getUserId())
+                        .build();
+
+        AggregateLifecycle.apply(productReservationCancelledEvent);
+    }
+
+    @EventSourcingHandler
+    public void on (ProductReservationCancelledEvent productReservationCancelledEvent) {
+        this.quantity += productReservationCancelledEvent.getQuantity();
     }
 
     @CommandHandler
